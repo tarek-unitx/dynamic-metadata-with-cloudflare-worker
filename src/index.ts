@@ -45,12 +45,19 @@ export default {
       const placeholderPattern = /{([^}]+)}/;
       const metaDataEndpointWithId = metaDataEndpoint.replace(placeholderPattern, id);
     
-      // Fetch metadata from the API endpoint with authorization
+      // Fetch metadata from the API endpoint with both apikey and Authorization in headers
       const metaDataResponse = await fetch(metaDataEndpointWithId, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`
+          'apikey': env.apikey,
+          'Authorization': `Bearer ${env.apikey}`
         }
       });
+      
+      if (!metaDataResponse.ok) {
+        console.error('Metadata fetch failed:', await metaDataResponse.text());
+        throw new Error('Failed to fetch metadata');
+      }
+      
       const metadata = await metaDataResponse.json();
       return metadata;
     }
