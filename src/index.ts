@@ -8,6 +8,9 @@ export default {
 
     console.log("Worker started");
 
+    // Get the API key from the environment
+    const apiKey = env.apikey;
+
     // Parse the request URL
     const url = new URL(request.url);
     const referer = request.headers.get('Referer')
@@ -42,8 +45,12 @@ export default {
       const placeholderPattern = /{([^}]+)}/;
       const metaDataEndpointWithId = metaDataEndpoint.replace(placeholderPattern, id);
     
-      // Fetch metadata from the API endpoint
-      const metaDataResponse = await fetch(metaDataEndpointWithId);
+      // Fetch metadata from the API endpoint with authorization
+      const metaDataResponse = await fetch(metaDataEndpointWithId, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
       const metadata = await metaDataResponse.json();
       return metadata;
     }
